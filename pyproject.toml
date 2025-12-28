@@ -1,0 +1,6 @@
+[project]
+name = "todo-app"
+version = "0.1.0"
+description = "Phase I: In-memory Python console todo application with 5 core features"
+requires-python = ">=3.13"
+dependencies = []
