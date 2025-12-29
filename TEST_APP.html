@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App Test Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .status-box {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .status-box h3 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .status-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .status-value {
+            color: #666;
+        }
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .instructions h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .instructions ol {
+            margin-left: 20px;
+            color: #856404;
+        }
+        .instructions li {
+            margin: 5px 0;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-card h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .feature-card p {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Todo App - Phase 2</h1>
+        <p class="subtitle">Full-Stack Web Application | FastAPI + Next.js</p>
+
+        <div class="status-box">
+            <h3>✅ Server Status</h3>
+            <div class="status-item">
+                <span class="status-label">Backend API:</span>
+                <span class="status-value">http://localhost:8000</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Frontend App:</span>
+                <span class="status-value">http://localhost:3000</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Database:</span>
+                <span class="status-value">SQLite (backend/todo.db)</span>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h4>📝 How to Use:</h4>
+            <ol>
+                <li>Click "Open Todo App" button below</li>
+                <li>Register with any email & password (min 8 chars)</li>
+                <li>Login with same credentials</li>
+                <li>Create, view, edit, delete tasks!</li>
+            </ol>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h4>✍️ Create Tasks</h4>
+                <p>Add tasks with title & description</p>
+            </div>
+            <div class="feature-card">
+                <h4>📋 View Tasks</h4>
+                <p>See all your tasks in one place</p>
+            </div>
+            <div class="feature-card">
+                <h4>✅ Toggle Status</h4>
+                <p>Mark complete/incomplete</p>
+            </div>
+            <div class="feature-card">
+                <h4>✏️ Edit Tasks</h4>
+                <p>Update title & description</p>
+            </div>
+            <div class="feature-card">
+                <h4>🗑️ Delete Tasks</h4>
+                <p>Remove tasks permanently</p>
+            </div>
+            <div class="feature-card">
+                <h4>🔐 User Auth</h4>
+                <p>Secure JWT authentication</p>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a href="http://localhost:3000" target="_blank" class="btn btn-primary">
+                🚀 Open Todo App
+            </a>
+            <a href="http://localhost:8000/docs" target="_blank" class="btn btn-secondary">
+                📚 API Documentation
+            </a>
+            <button onclick="testBackend()" class="btn btn-success">
+                🔍 Test Backend
+            </button>
+        </div>
+
+        <div id="test-result" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        async function testBackend() {
+            const resultDiv = document.getElementById('test-result');
+            resultDiv.innerHTML = '<p style="color: #666;">Testing backend...</p>';
+
+            try {
+                const response = await fetch('http://localhost:8000/');
+                const data = await response.json();
+
+                resultDiv.innerHTML = `
+                    <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; border-radius: 5px;">
+                        <h4 style="color: #155724; margin-bottom: 10px;">✅ Backend is Running!</h4>
+                        <p style="color: #155724; margin: 5px 0;">Message: ${data.message}</p>
+                        <p style="color: #155724; margin: 5px 0;">Status: ${data.status}</p>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; border-radius: 5px;">
+                        <h4 style="color: #721c24; margin-bottom: 10px;">❌ Backend Error</h4>
+                        <p style="color: #721c24;">Make sure backend server is running on port 8000</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test backend on load
+        window.onload = function() {
+            testBackend();
+        };
+    </script>
+</body>
+</html>
