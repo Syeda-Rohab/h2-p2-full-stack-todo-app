@@ -27,16 +27,26 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
+    // Check if token exists before fetching
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
     fetchTasks();
-  }, []);
+  }, [router]);
 
   const fetchTasks = async () => {
     try {
-      const response = await apiClient.get('/api/tasks');
+      const response = await apiClient.get('/api/tasks/');
       setTasks(response.data);
       setError('');
     } catch (err: any) {
-      setError('Failed to load tasks');
+      if (err.response?.status === 401) {
+        router.push('/login');
+      } else {
+        setError('Failed to load tasks');
+      }
     } finally {
       setLoading(false);
     }
