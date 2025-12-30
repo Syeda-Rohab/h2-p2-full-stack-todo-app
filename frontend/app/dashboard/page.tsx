@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { apiClient } from '@/lib/api';
 import { removeToken } from '@/lib/auth';
-import { validateTitle, validateDescription } from '@/lib/validation';
 
 interface Task {
   id: number;
@@ -12,7 +12,6 @@ interface Task {
   description: string | null;
   status: string;
   created_at: string;
-  updated_at: string;
 }
 
 export default function DashboardPage() {
@@ -21,20 +20,17 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editDescription, setEditDescription] = useState('');
   const router = useRouter();
 
   useEffect(() => {
-    // Check if token exists before fetching
     const token = localStorage.getItem('access_token');
     if (!token) {
       router.push('/login');
       return;
     }
     fetchTasks();
-  }, [router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchTasks = async () => {
     try {
@@ -54,23 +50,12 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     removeToken();
-    router.push('/login');
+    router.push('/');
   };
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const titleError = validateTitle(newTaskTitle);
-    if (titleError) {
-      setError(titleError);
-      return;
-    }
-
-    const descError = validateDescription(newTaskDescription);
-    if (descError) {
-      setError(descError);
-      return;
-    }
+    if (!newTaskTitle.trim()) return;
 
     try {
       await apiClient.post('/api/tasks/', {
@@ -79,7 +64,6 @@ export default function DashboardPage() {
       });
       setNewTaskTitle('');
       setNewTaskDescription('');
-      setError('');
       fetchTasks();
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to create task');
@@ -91,13 +75,12 @@ export default function DashboardPage() {
       await apiClient.post(`/api/tasks/${taskId}/toggle`);
       fetchTasks();
     } catch (err: any) {
-      setError('Failed to toggle task status');
+      setError('Failed to toggle task');
     }
   };
 
   const handleDeleteTask = async (taskId: number) => {
-    if (!confirm('Are you sure you want to delete this task?')) return;
-
+    if (!confirm('Delete this task?')) return;
     try {
       await apiClient.delete(`/api/tasks/${taskId}`);
       fetchTasks();
@@ -106,57 +89,33 @@ export default function DashboardPage() {
     }
   };
 
-  const startEdit = (task: Task) => {
-    setEditingTask(task);
-    setEditTitle(task.title);
-    setEditDescription(task.description || '');
-  };
-
-  const handleUpdateTask = async () => {
-    if (!editingTask) return;
-
-    const titleError = validateTitle(editTitle);
-    if (titleError) {
-      setError(titleError);
-      return;
-    }
-
-    const descError = validateDescription(editDescription);
-    if (descError) {
-      setError(descError);
-      return;
-    }
-
-    try {
-      await apiClient.put(`/api/tasks/${editingTask.id}`, {
-        title: editTitle,
-        description: editDescription || null
-      });
-      setEditingTask(null);
-      setError('');
-      fetchTasks();
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to update task');
-    }
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+      {/* Navbar */}
+      <nav className="bg-black/50 backdrop-blur-lg border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Todo App</h1>
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-8">
+              <h1 className="text-2xl font-bold text-white">
+                <span className="text-indigo-500">Todo</span> Dashboard
+              </h1>
+              <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </Link>
+            </div>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+              className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all"
             >
               Logout
             </button>
@@ -164,156 +123,106 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <div className="mb-4 rounded-md bg-red-50 p-4">
-            <p className="text-sm text-red-800">{error}</p>
+          <div className="mb-6 bg-red-500/10 border border-red-500 rounded-lg p-4">
+            <p className="text-red-400">{error}</p>
           </div>
         )}
 
-        {/* Create Task Form */}
-        <div className="bg-white shadow sm:rounded-lg mb-6">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-              Create New Task
-            </h3>
-            <form onSubmit={handleCreateTask} className="space-y-4">
-              <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  value={newTaskTitle}
-                  onChange={(e) => setNewTaskTitle(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="Enter task title"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                  Description (optional)
-                </label>
-                <textarea
-                  id="description"
-                  value={newTaskDescription}
-                  onChange={(e) => setNewTaskDescription(e.target.value)}
-                  rows={3}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="Enter task description"
-                />
-              </div>
-              <button
-                type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Add Task
-              </button>
-            </form>
-          </div>
+        {/* Create Task */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl border border-gray-700 mb-8">
+          <h3 className="text-xl font-bold text-white mb-4">Create New Task</h3>
+          <form onSubmit={handleCreateTask} className="space-y-4">
+            <input
+              type="text"
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+              placeholder="Task title..."
+              required
+            />
+            <textarea
+              value={newTaskDescription}
+              onChange={(e) => setNewTaskDescription(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+              placeholder="Description (optional)..."
+              rows={3}
+            />
+            <button
+              type="submit"
+              className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all"
+            >
+              Add Task
+            </button>
+          </form>
         </div>
 
         {/* Tasks List */}
-        <div className="bg-white shadow sm:rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-              Your Tasks ({tasks.length})
-            </h3>
-            {tasks.length === 0 ? (
-              <p className="text-gray-500">No tasks yet. Create your first task above!</p>
-            ) : (
-              <div className="space-y-4">
-                {tasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                  >
-                    {editingTask?.id === task.id ? (
-                      <div className="space-y-3">
-                        <input
-                          type="text"
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-gray-900"
-                        />
-                        <textarea
-                          value={editDescription}
-                          onChange={(e) => setEditDescription(e.target.value)}
-                          rows={3}
-                          className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-gray-900"
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={handleUpdateTask}
-                            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={() => setEditingTask(null)}
-                            className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className={`text-lg font-medium ${task.status === 'Complete' ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                              {task.title}
-                            </h4>
-                            {task.description && (
-                              <p className="mt-1 text-sm text-gray-600">{task.description}</p>
-                            )}
-                            <p className="mt-2 text-xs text-gray-400">
-                              Created: {new Date(task.created_at).toLocaleString()}
-                            </p>
-                          </div>
-                          <div className="ml-4 flex-shrink-0">
-                            <span
-                              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                task.status === 'Complete'
-                                  ? 'bg-green-100 text-green-800'
-                                  : 'bg-yellow-100 text-yellow-800'
-                              }`}
-                            >
-                              {task.status}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="mt-4 flex gap-2">
-                          <button
-                            onClick={() => handleToggleStatus(task.id)}
-                            className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-                          >
-                            {task.status === 'Complete' ? 'Mark Incomplete' : 'Mark Complete'}
-                          </button>
-                          <button
-                            onClick={() => startEdit(task)}
-                            className="px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteTask(task.id)}
-                            className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </>
-                    )}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl border border-gray-700">
+          <h3 className="text-xl font-bold text-white mb-6">Your Tasks ({tasks.length})</h3>
+
+          {tasks.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">No tasks yet. Create one above!</p>
+          ) : (
+            <div className="space-y-4">
+              {tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="bg-gray-900 p-5 rounded-xl border border-gray-700 hover:border-indigo-500/50 transition-all"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className={`text-lg font-semibold ${task.status === 'Complete' ? 'line-through text-gray-500' : 'text-white'}`}>
+                        {task.title}
+                      </h4>
+                      {task.description && (
+                        <p className="text-gray-400 mt-1">{task.description}</p>
+                      )}
+                      <p className="text-xs text-gray-600 mt-2">
+                        {new Date(task.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        task.status === 'Complete'
+                          ? 'bg-green-500/20 text-green-400'
+                          : 'bg-yellow-500/20 text-yellow-400'
+                      }`}
+                    >
+                      {task.status}
+                    </span>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={() => handleToggleStatus(task.id)}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm transition-all"
+                    >
+                      {task.status === 'Complete' ? 'Undo' : 'Complete'}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTask(task.id)}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm transition-all"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-black/50 backdrop-blur-lg border-t border-gray-800 py-6 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-gray-400">
+            Built with{' '}
+            <span className="text-indigo-500 font-semibold">D/O : Syed Rashid Ali</span>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
