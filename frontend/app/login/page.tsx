@@ -22,7 +22,13 @@ export default function LoginPage() {
         password
       });
 
+      // Save token and wait a bit to ensure it's written
       saveToken(response.data.access_token);
+
+      // Small delay to ensure localStorage is written
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Use router.push instead of window.location.href
       window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Login failed. Check your credentials.');

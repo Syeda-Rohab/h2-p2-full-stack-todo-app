@@ -28,7 +28,12 @@ export default function RegisterPage() {
         password
       });
 
+      // Save token and wait a bit to ensure it's written
       saveToken(response.data.access_token);
+
+      // Small delay to ensure localStorage is written
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Registration failed');

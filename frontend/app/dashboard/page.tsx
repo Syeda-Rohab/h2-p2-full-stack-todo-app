@@ -23,12 +23,17 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-    fetchTasks();
+    // Add a small delay to ensure localStorage is available
+    const checkAuth = async () => {
+      await new Promise(resolve => setTimeout(resolve, 50));
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+      fetchTasks();
+    };
+    checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
