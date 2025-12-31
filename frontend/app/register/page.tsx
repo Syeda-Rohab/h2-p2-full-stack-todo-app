@@ -5,12 +5,15 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { apiClient } from '@/lib/api';
 import { saveToken } from '@/lib/auth';
+import { useTheme } from '@/contexts/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { theme } = useTheme();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,17 +36,32 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center py-12 px-4">
-      {/* ULTRA DARK Blue Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-[#000208] via-[#00050f] to-black opacity-95" />
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#0a1929_1px,transparent_1px),linear-gradient(to_bottom,#0a1929_1px,transparent_1px)] bg-[size:40px_40px]" />
+    <div className={`min-h-screen relative overflow-hidden flex items-center justify-center py-12 px-4 ${theme === 'dark' ? 'bg-black' : 'bg-white'}`}>
+      {/* Background */}
+      <div className={`fixed inset-0 ${
+        theme === 'dark'
+          ? 'bg-gradient-to-br from-[#000208] via-[#00050f] to-black opacity-95'
+          : 'bg-gradient-to-br from-blue-50 via-white to-blue-50'
+      }`} />
+      <div className={`fixed inset-0 ${
+        theme === 'dark'
+          ? 'bg-[linear-gradient(to_right,#0a1929_1px,transparent_1px),linear-gradient(to_bottom,#0a1929_1px,transparent_1px)] bg-[size:40px_40px]'
+          : 'bg-[linear-gradient(to_right,#e0f2fe_1px,transparent_1px),linear-gradient(to_bottom,#e0f2fe_1px,transparent_1px)] bg-[size:40px_40px]'
+      }`} />
 
-      {/* Animated Dark Blue Orbs */}
+      {/* Theme Toggle - Top Right */}
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
+
+      {/* Animated Orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute w-[600px] h-[600px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(15, 40, 90, 0.2) 0%, rgba(15, 40, 90, 0) 70%)',
+            background: theme === 'dark'
+              ? 'radial-gradient(circle, rgba(15, 40, 90, 0.2) 0%, rgba(15, 40, 90, 0) 70%)'
+              : 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0) 70%)',
             filter: 'blur(80px)',
             top: '-200px',
             right: '-150px',
@@ -54,7 +72,9 @@ export default function RegisterPage() {
         <motion.div
           className="absolute w-[600px] h-[600px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(20, 50, 100, 0.15) 0%, rgba(20, 50, 100, 0) 70%)',
+            background: theme === 'dark'
+              ? 'radial-gradient(circle, rgba(20, 50, 100, 0.15) 0%, rgba(20, 50, 100, 0) 70%)'
+              : 'radial-gradient(circle, rgba(147, 197, 253, 0.2) 0%, rgba(147, 197, 253, 0) 70%)',
             filter: 'blur(80px)',
             bottom: '-200px',
             left: '-150px',
@@ -73,9 +93,15 @@ export default function RegisterPage() {
         {/* Back Button */}
         <Link
           href="/"
-          className="group mb-8 inline-flex items-center text-blue-300 hover:text-blue-200 transition-colors"
+          className={`group mb-8 inline-flex items-center transition-colors ${
+            theme === 'dark' ? 'text-blue-300 hover:text-blue-200' : 'text-blue-600 hover:text-blue-700'
+          }`}
         >
-          <div className="bg-[#00080f]/60 group-hover:bg-[#000c15]/80 border-2 border-blue-900/40 group-hover:border-blue-800/60 rounded-xl px-5 py-3 transition-all">
+          <div className={`border-2 rounded-xl px-5 py-3 transition-all ${
+            theme === 'dark'
+              ? 'bg-[#00080f]/60 group-hover:bg-[#000c15]/80 border-blue-900/40 group-hover:border-blue-800/60'
+              : 'bg-white/60 group-hover:bg-blue-50/80 border-blue-300/40 group-hover:border-blue-500/60'
+          }`}>
             <div className="flex items-center space-x-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -87,25 +113,41 @@ export default function RegisterPage() {
 
         {/* Register Card */}
         <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-900/30 to-blue-800/30 rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition duration-500" />
+          <div className={`absolute -inset-1 rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition duration-500 ${
+            theme === 'dark'
+              ? 'bg-gradient-to-r from-blue-900/30 to-blue-800/30'
+              : 'bg-gradient-to-r from-blue-400/20 to-blue-300/20'
+          }`} />
 
-          <div className="relative bg-gradient-to-br from-[#00080f]/90 to-[#000510]/90 p-10 rounded-3xl border-2 border-blue-900/40 backdrop-blur-2xl">
+          <div className={`relative p-10 rounded-3xl border-2 backdrop-blur-2xl ${
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-[#00080f]/90 to-[#000510]/90 border-blue-900/40'
+              : 'bg-gradient-to-br from-white/90 to-blue-50/90 border-blue-400/40'
+          }`}>
             {/* Logo & Title */}
             <div className="text-center mb-10">
               <div className="relative inline-block mb-5">
-                <div className="absolute -inset-2 bg-gradient-to-r from-blue-900/40 to-blue-800/40 rounded-2xl blur-lg" />
-                <div className="relative bg-gradient-to-br from-[#000510] to-[#00080f] px-8 py-4 rounded-2xl border-2 border-blue-900/40">
+                <div className={`absolute -inset-2 rounded-2xl blur-lg ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-blue-900/40 to-blue-800/40'
+                    : 'bg-gradient-to-r from-blue-400/20 to-blue-300/20'
+                }`} />
+                <div className={`relative px-8 py-4 rounded-2xl border-2 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-br from-[#000510] to-[#00080f] border-blue-900/40'
+                    : 'bg-gradient-to-br from-white to-blue-50 border-blue-400/40'
+                }`}>
                   <h1 className="text-4xl font-black tracking-tight">
                     <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-cyan-400 bg-clip-text text-transparent">
                       TODO
                     </span>
-                    <span className="text-white ml-3 text-3xl">AI</span>
+                    <span className={`ml-3 text-3xl ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>AI</span>
                   </h1>
                 </div>
               </div>
 
-              <h2 className="text-4xl font-black text-white mb-2">Create Account</h2>
-              <p className="text-blue-200/80">Start your AI-powered productivity journey</p>
+              <h2 className={`text-4xl font-black mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Account</h2>
+              <p className={theme === 'dark' ? 'text-blue-200/80' : 'text-gray-600'}>Start your AI-powered productivity journey</p>
             </div>
 
             {/* Form */}
@@ -124,36 +166,56 @@ export default function RegisterPage() {
               )}
 
               <div>
-                <label htmlFor="email" className="block text-sm font-black text-blue-200 mb-3 uppercase tracking-wide">
+                <label htmlFor="email" className={`block text-sm font-black mb-3 uppercase tracking-wide ${
+                  theme === 'dark' ? 'text-blue-200' : 'text-blue-700'
+                }`}>
                   Email Address
                 </label>
                 <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-900/20 to-blue-800/20 rounded-xl blur opacity-0 group-hover:opacity-50 transition duration-300" />
+                  <div className={`absolute -inset-0.5 rounded-xl blur opacity-0 group-hover:opacity-50 transition duration-300 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-blue-900/20 to-blue-800/20'
+                      : 'bg-gradient-to-r from-blue-400/10 to-blue-300/10'
+                  }`} />
                   <input
                     id="email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="relative w-full px-6 py-4 bg-[#00080f]/80 border-2 border-blue-900/40 rounded-xl text-white placeholder-blue-300/30 focus:outline-none focus:border-blue-700/60 focus:bg-[#000c15]/90 transition-all backdrop-blur-sm font-medium"
+                    className={`relative w-full px-6 py-4 border-2 rounded-xl focus:outline-none transition-all backdrop-blur-sm font-medium ${
+                      theme === 'dark'
+                        ? 'bg-[#00080f]/80 border-blue-900/40 text-white placeholder-blue-300/30 focus:border-blue-700/60 focus:bg-[#000c15]/90'
+                        : 'bg-white/80 border-blue-300/40 text-gray-900 placeholder-gray-400 focus:border-blue-500/60 focus:bg-white'
+                    }`}
                     placeholder="you@example.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-black text-blue-200 mb-3 uppercase tracking-wide">
+                <label htmlFor="password" className={`block text-sm font-black mb-3 uppercase tracking-wide ${
+                  theme === 'dark' ? 'text-blue-200' : 'text-blue-700'
+                }`}>
                   Password
                 </label>
                 <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-900/20 to-blue-800/20 rounded-xl blur opacity-0 group-hover:opacity-50 transition duration-300" />
+                  <div className={`absolute -inset-0.5 rounded-xl blur opacity-0 group-hover:opacity-50 transition duration-300 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-blue-900/20 to-blue-800/20'
+                      : 'bg-gradient-to-r from-blue-400/10 to-blue-300/10'
+                  }`} />
                   <input
                     id="password"
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="relative w-full px-6 py-4 bg-[#00080f]/80 border-2 border-blue-900/40 rounded-xl text-white placeholder-blue-300/30 focus:outline-none focus:border-blue-700/60 focus:bg-[#000c15]/90 transition-all backdrop-blur-sm font-medium"
+                    className={`relative w-full px-6 py-4 border-2 rounded-xl focus:outline-none transition-all backdrop-blur-sm font-medium ${
+                      theme === 'dark'
+                        ? 'bg-[#00080f]/80 border-blue-900/40 text-white placeholder-blue-300/30 focus:border-blue-700/60 focus:bg-[#000c15]/90'
+                        : 'bg-white/80 border-blue-300/40 text-gray-900 placeholder-gray-400 focus:border-blue-500/60 focus:bg-white'
+                    }`}
                     placeholder="••••••••"
                   />
                 </div>
@@ -164,10 +226,20 @@ export default function RegisterPage() {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="group relative w-full py-5 text-white font-black text-lg rounded-2xl overflow-hidden transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-blue-900/50"
+                className={`group relative w-full py-5 text-white font-black text-lg rounded-2xl overflow-hidden transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl ${
+                  theme === 'dark' ? 'shadow-blue-900/50' : 'shadow-blue-500/50'
+                }`}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900" />
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500" />
+                <div className={`absolute inset-0 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900'
+                    : 'bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600'
+                }`} />
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900'
+                    : 'bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600'
+                }`} />
                 <span className="relative z-10 flex items-center justify-center">
                   {loading ? (
                     <>
@@ -184,9 +256,11 @@ export default function RegisterPage() {
               </motion.button>
             </form>
 
-            <p className="mt-8 text-center text-blue-200/70">
+            <p className={`mt-8 text-center ${theme === 'dark' ? 'text-blue-200/70' : 'text-gray-600'}`}>
               Already have an account?{' '}
-              <Link href="/login" className="text-blue-300 hover:text-blue-200 font-black transition-colors">
+              <Link href="/login" className={`font-black transition-colors ${
+                theme === 'dark' ? 'text-blue-300 hover:text-blue-200' : 'text-blue-600 hover:text-blue-700'
+              }`}>
                 Sign in
               </Link>
             </p>
@@ -195,9 +269,13 @@ export default function RegisterPage() {
       </motion.div>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-[#0a1929]/50 bg-black/70 backdrop-blur-2xl py-8 mt-16">
+      <footer className={`fixed bottom-0 left-0 right-0 z-10 border-t backdrop-blur-2xl py-8 ${
+        theme === 'dark'
+          ? 'border-[#0a1929]/50 bg-black/70'
+          : 'border-blue-200/50 bg-white/70'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-blue-200 text-lg">
+          <p className={`text-lg ${theme === 'dark' ? 'text-blue-200' : 'text-gray-700'}`}>
             Build with D/O :{' '}
             <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-cyan-400 bg-clip-text text-transparent font-black text-xl">
               Syed Rashid Ali
