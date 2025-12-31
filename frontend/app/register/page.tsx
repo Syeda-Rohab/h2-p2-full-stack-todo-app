@@ -268,21 +268,6 @@ export default function RegisterPage() {
         </div>
       </motion.div>
 
-      {/* Footer */}
-      <footer className={`fixed bottom-0 left-0 right-0 z-10 border-t backdrop-blur-2xl py-8 ${
-        theme === 'dark'
-          ? 'border-[#0a1929]/50 bg-black/70'
-          : 'border-blue-200/50 bg-white/70'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className={`text-lg ${theme === 'dark' ? 'text-blue-200' : 'text-gray-700'}`}>
-            Build with D/O :{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-cyan-400 bg-clip-text text-transparent font-black text-xl">
-              Syed Rashid Ali
-            </span>
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
