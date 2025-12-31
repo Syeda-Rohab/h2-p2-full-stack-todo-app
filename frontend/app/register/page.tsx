@@ -193,6 +193,18 @@ export default function RegisterPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-[#0a1929]/50 bg-black/70 backdrop-blur-2xl py-8 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-blue-200 text-lg">
+            Build with D/O :{' '}
+            <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-cyan-400 bg-clip-text text-transparent font-black text-xl">
+              Syed Rashid Ali
+            </span>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
