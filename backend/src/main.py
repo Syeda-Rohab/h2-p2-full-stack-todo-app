@@ -17,7 +17,7 @@ app.add_middleware(
 @app.get("/")
 async def root():
     """Root endpoint"""
-    return {"message": "Todo API - Phase II", "status": "running"}
+    return {"message": "Todo API - Phase III with AI", "status": "running"}
 
 
 @app.get("/health")
@@ -29,6 +29,8 @@ async def health():
 # Include routers
 from src.api.auth import router as auth_router
 from src.api.tasks import router as tasks_router
+from src.api.chat import router as chat_router
 
 app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 app.include_router(tasks_router, prefix="/api/tasks", tags=["tasks"])
+app.include_router(chat_router, prefix="/api", tags=["chat"])

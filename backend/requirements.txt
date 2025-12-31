@@ -8,3 +8,7 @@ uvicorn[standard]>=0.32.0
 python-dotenv>=1.0.0
 pydantic>=2.10.0
 pydantic-settings>=2.6.0
+
+# Phase III: AI Features
+openai>=1.0.0
+python-dateutil>=2.8.0
