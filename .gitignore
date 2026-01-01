@@ -92,4 +92,7 @@ build/
 # Alembic (database migrations)
 # Keep migrations tracked, but ignore version cache
 backend/alembic/__pycache__/
-.claude/
+
+# Claude Code - ignore most, but keep skills
+.claude/*
+!.claude/skills/
