@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: todo-backend
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && alembic upgrade head
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_DAYS
+        value: 7
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: ENABLE_AI_CHAT
+        value: true
+      - key: ENABLE_VOICE
+        value: true
+      - key: ENABLE_SUGGESTIONS
+        value: true
+
+databases:
+  - name: todo-db
+    plan: free
+    databaseName: todo_db
+    user: todo_user
