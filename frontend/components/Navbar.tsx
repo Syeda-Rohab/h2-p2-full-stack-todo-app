@@ -1,5 +1,5 @@
 'use client';
-
+// Mobile-friendly navbar with icons - v2.0
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { isAuthenticated, removeToken } from '@/lib/auth';
